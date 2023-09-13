@@ -1,31 +1,24 @@
 import { Module } from '@nestjs/common'
 import { DatabaseModule } from './infrastructure/database/database.module'
-import { RMQModule, getEnv } from './infrastructure/rmq/rmq.module'
-import { ChatModule } from './modules/chat/chat.module'
 import { JwtModule } from '@nestjs/jwt'
-import { WsAuthModule } from './modules/wsAuth/wsAuth.module'
 import { MapperModule } from './infrastructure/automapper/mapper.module'
-import { TagsModule } from './modules/tags/tags.module'
 import { RedisModule } from './infrastructure/redis/redis.module'
+import { AuthModule } from '@modules/auth/auth.module'
+import { UserModule } from '@modules/users/users.module'
 
-type RmqResponseType = 'RESPONSE' | 'QUEUE' | undefined
-
-const secret = getEnv('JWT_SECRET') || 'secret'
-export const RMQ_RESPONSE_TYPE = getEnv('RMQ_RESPONSE_TYPE') as RmqResponseType
+const secret = process.env.JWT_SECRET || 'secret'
 
 @Module({
   imports: [
     DatabaseModule,
-    RMQModule,
-    ChatModule,
     JwtModule.register({
       global: true,
       secret,
     }),
-    RedisModule,
-    WsAuthModule,
+    // RedisModule,
     MapperModule,
-    TagsModule,
+    AuthModule,
+    UserModule,
   ],
 })
 export class AppModule {}

@@ -7,3 +7,62 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id    String        @unique @default(uuid()) @db.Uuid
+  role  UserRolesEnum
+  email String        @unique
+  name  String
+
+  birthDate DateTime
+  books     UserBookPivotTable[]
+
+  @@map("user")
+}
+
+model Book {
+  id   String @unique @default(uuid()) @db.Uuid
+  name String @unique
+  redaction String
+  publishedDate       DateTime
+
+  authors             UserBookPivotTable[]
+  genres BookGenrePivotTable[]
+
+  @@map("book")
+}
+
+model Genre {
+  id String @unique @default(uuid()) @db.Uuid
+  name                String                @unique
+  books BookGenrePivotTable[]
+
+  @@map("genre")
+}
+
+model BookGenrePivotTable {
+  genreId String @db.Uuid
+  bookId  String @db.Uuid
+
+  genre Genre @relation(fields: [genreId], references: [id])
+  book  Book  @relation(fields: [bookId], references: [id])
+
+  @@unique([genreId, bookId])
+  @@map("book_genre_pivot_table")
+}
+
+model UserBookPivotTable {
+  userId String @db.Uuid
+  bookId String @db.Uuid
+
+  user User @relation(fields: [userId], references: [id])
+  book Book @relation(fields: [bookId], references: [id])
+
+  @@unique([userId, bookId])
+  @@map("user_book_pivot_table")
+}
+
+enum UserRolesEnum {
+  admin
+  user
+}
