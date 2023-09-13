@@ -5,8 +5,9 @@ import { MapperModule } from './infrastructure/automapper/mapper.module'
 import { RedisModule } from './infrastructure/redis/redis.module'
 import { AuthModule } from '@modules/auth/auth.module'
 import { UserModule } from '@modules/users/users.module'
+import { getJwtSecret } from '@modules/auth/utils/getJwtSecret.util'
 
-const secret = process.env.JWT_SECRET || 'secret'
+const secret = getJwtSecret()
 
 @Module({
   imports: [
