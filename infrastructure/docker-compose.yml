@@ -1,7 +1,7 @@
 ---
 services:
   library_db:
-    container_name: db_chat
+    container_name: library_db
     image: postgres:12
     restart: always
     env_file:
