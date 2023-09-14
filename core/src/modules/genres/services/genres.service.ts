@@ -22,6 +22,7 @@ export class GenresService {
   }
 
   async getGenresByNames(names: string[]) {
+    if (!names?.length) return []
     return this.prisma.genre.findMany({
       where: {
         name: {

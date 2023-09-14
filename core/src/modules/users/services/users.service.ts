@@ -4,17 +4,38 @@ import { RepositoryProvider } from '@infrastructure/database/services/repository
 import { UserNotFoundException } from '@modules/auth/exceptions/userNotFound.exception'
 import { ForbiddenException, Injectable } from '@nestjs/common'
 import { UserUpdateDto } from '../dto/userUpdate.dto'
-import { User, UserRolesEnum } from '@prisma/client'
+import { Prisma, User, UserRolesEnum } from '@prisma/client'
+import { PasswordService } from '@modules/auth/services/password.service'
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly repository: RepositoryProvider,
+    private readonly passwordService: PasswordService,
   ) {}
 
   async findMany(listing: ListingDto) {
-    return this.repository.findMany('user', this.prisma.user, listing)
+    return this.repository.findMany(
+      'user',
+      this.prisma.user,
+      listing,
+      this.defaultUserIncludes(),
+    )
+  }
+
+  private defaultUserIncludes(): Prisma.UserInclude {
+    return {
+      books: {
+        select: {
+          book: {
+            include: {
+              bookResources: true,
+            },
+          },
+        },
+      },
+    }
   }
 
   async findOneWithBooks(id: string) {
@@ -23,13 +44,7 @@ export class UsersService {
         where: {
           id,
         },
-        include: {
-          books: {
-            select: {
-              book: true,
-            },
-          },
-        },
+        include: this.defaultUserIncludes(),
       })
       .catch(() => {
         throw new UserNotFoundException()
@@ -37,6 +52,12 @@ export class UsersService {
   }
   async updateUser(id: string, data: UserUpdateDto, authUser: User) {
     this.checkUserUpdatePermission(id, authUser)
+
+    const { password } = data
+
+    data.password = password
+      ? await this.passwordService.hashingPassword(password)
+      : password
 
     return this.prisma.user.update({
       where: {
@@ -52,7 +73,7 @@ export class UsersService {
   ) {
     const { id, role } = authUser
 
-    if (id !== authorId || role !== UserRolesEnum.admin) {
+    if (id !== authorId && role !== UserRolesEnum.admin) {
       throw new ForbiddenException()
     }
   }

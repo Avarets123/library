@@ -42,7 +42,6 @@ export class RepositoryProvider {
 
     const records = model.findMany({
       where,
-      orderBy: this.applyOrdering(params.sort),
       skip,
       take,
       include,

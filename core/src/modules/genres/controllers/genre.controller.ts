@@ -27,7 +27,9 @@ export class GenresController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRolesEnum.admin)
   @Post()
-  create(@Body() body: GenreCreateDto) {}
+  create(@Body() body: GenreCreateDto) {
+    return this.genresService.create(body)
+  }
 
   @HttpCode(HttpStatus.OK)
   @Get()

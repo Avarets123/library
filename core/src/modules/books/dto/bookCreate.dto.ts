@@ -1,4 +1,11 @@
-import { IsArray, IsDate, IsOptional, IsString } from 'class-validator'
+import {
+  IsArray,
+  IsDate,
+  IsDateString,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator'
 
 export class BookCreateDto {
   @IsString()
@@ -7,8 +14,13 @@ export class BookCreateDto {
   @IsString()
   redaction: string
 
-  @IsDate()
-  publishedDate: string
+  @IsDateString()
+  publishedDate: Date
+
+  @IsOptional()
+  @IsUUID(undefined, { each: true })
+  @IsArray()
+  authorsIds: string[]
 
   @IsOptional()
   @IsArray()

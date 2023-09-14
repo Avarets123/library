@@ -22,15 +22,15 @@ export class UniqueConstraint implements ValidatorConstraintInterface {
 
     if (!value || !model) return false
 
-    const record = await this.prisma[model].findUnique({
+    console.log(this.prisma)
+
+    const record = await this.prisma[model].findFirst({
       where: {
         [property]: value,
       },
     })
 
     if (!record) return true
-
-    
 
     return false
   }
@@ -43,13 +43,12 @@ export class UniqueConstraint implements ValidatorConstraintInterface {
 export function Unique(
   model: string,
   uniqueField: string,
-  exceptField: string = null,
   validationOptions?: ValidationOptions,
 ) {
   return function (object: any, propertyName: string) {
     registerDecorator({
       target: object.constructor,
-      propertyName: propertyName,
+      propertyName,
       options: validationOptions,
       constraints: [
         model,

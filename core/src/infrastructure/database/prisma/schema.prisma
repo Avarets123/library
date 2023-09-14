@@ -28,8 +28,8 @@ model Book {
   redaction     String
   publishedDate DateTime
 
-  authors      UserBookPivotTable[]
-  genres       BookGenrePivotTable[]
+  authors       UserBookPivotTable[]
+  genres        BookGenrePivotTable[]
   bookResources BookResource[]
 
   @@map("book")
@@ -43,7 +43,7 @@ model BookResource {
   size     Int
 
   bookId String @db.Uuid
-  book   Book   @relation(fields: [bookId], references: [id])
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
 }
 
 model Genre {
@@ -58,8 +58,8 @@ model BookGenrePivotTable {
   genreId String @db.Uuid
   bookId  String @db.Uuid
 
-  genre Genre @relation(fields: [genreId], references: [id])
-  book  Book  @relation(fields: [bookId], references: [id])
+  genre Genre @relation(fields: [genreId], references: [id], onDelete: Cascade)
+  book  Book  @relation(fields: [bookId], references: [id], onDelete: Cascade)
 
   @@unique([genreId, bookId])
   @@map("book_genre_pivot_table")
@@ -69,8 +69,8 @@ model UserBookPivotTable {
   userId String @db.Uuid
   bookId String @db.Uuid
 
-  user User @relation(fields: [userId], references: [id])
-  book Book @relation(fields: [bookId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
 
   @@unique([userId, bookId])
   @@map("user_book_pivot_table")

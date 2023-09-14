@@ -7,8 +7,10 @@ import {
   HttpStatus,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
   Query,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -21,6 +23,8 @@ import { UserRolesEnum } from '@prisma/client'
 import { BookCreateDto } from '../dto/bookCreate.dto'
 import { ListingDto } from '@infrastructure/common/pagination/dto/listing.dto'
 import { FileInterceptor } from '@nestjs/platform-express'
+import { Response } from 'express'
+import { BookUpdateDto } from '../dto/bookUpdate.dto'
 
 @Controller('books')
 export class BooksController {
@@ -41,19 +45,36 @@ export class BooksController {
   }
 
   @HttpCode(HttpStatus.CREATED)
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileInterceptor('file', {
+      dest: './books',
+    }),
+  )
   @Post(':bookId/resources/upload')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRolesEnum.admin)
-  bookUpload(@UploadedFile() file: Express.Multer.File) {}
+  bookUpload(
+    @UploadedFile() file: Express.Multer.File,
+    @Param('bookId') bookId: string,
+  ) {
+    return this.booksService.bookResourceUpload(bookId, file)
+  }
 
   @HttpCode(HttpStatus.OK)
   @Get(':bookId/resources/:resourceId/download')
   @UseGuards(JwtAuthGuard)
-  bookResourceDownload(
+  async bookResourceDownload(
     @Param('bookId', ParseUUIDPipe) bookId: string,
     @Param('resourceId', ParseUUIDPipe) resourceId: string,
-  ) {}
+    @Res() res: Response,
+  ) {
+    const resourceStream = await this.booksService.getBookResourceFile(
+      resourceId,
+      bookId,
+    )
+
+    resourceStream.pipe(res)
+  }
 
   @HttpCode(HttpStatus.OK)
   @Get('genres/:genreId')
@@ -70,6 +91,17 @@ export class BooksController {
   @UseGuards(JwtAuthGuard)
   bookResources(@Param('bookId', ParseUUIDPipe) bookId: string) {
     return this.booksService.findBookResources(bookId)
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Patch(':bookId')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRolesEnum.admin)
+  bookUpdate(
+    @Param('bookId', ParseUUIDPipe) bookId: string,
+    @Body() body: BookUpdateDto,
+  ) {
+    return this.booksService.bookUpdate(bookId, body)
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)

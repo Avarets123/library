@@ -25,7 +25,8 @@ export class NestValidationErrorToValidationErrorMapper {
     const exceptions = this.exceptions
     response.code = this.code
     response.status = this.status
-    response.messages = exceptions as any
+    response.exceptions = exceptions
+    response.messages = exceptions.map(({ message }) => message)
 
     return response
   }
