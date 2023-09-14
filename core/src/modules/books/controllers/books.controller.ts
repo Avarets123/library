@@ -27,8 +27,6 @@ import { Response } from 'express'
 import { BookUpdateDto } from '../dto/bookUpdate.dto'
 import { MapInterceptor } from '@automapper/nestjs'
 import { BookResourceModel } from '@infrastructure/database/models/bookResource.model'
-import { BookModel } from '@infrastructure/database/models/book.model'
-import { BookReadDto } from '../dto/bookRead.dto'
 
 @Controller('books')
 export class BooksController {
@@ -83,7 +81,6 @@ export class BooksController {
 
   @HttpCode(HttpStatus.OK)
   @Get('genres/:genreId')
-  @UseGuards(JwtAuthGuard)
   findBooksByGenre(
     @Param('genreId', ParseUUIDPipe) genreId: string,
     @Query() lsiting: ListingDto,
@@ -96,7 +93,6 @@ export class BooksController {
     MapInterceptor(BookResourceModel, BookResourceModel, { isArray: true }),
   )
   @Get(':bookId/resources')
-  @UseGuards(JwtAuthGuard)
   bookResources(@Param('bookId', ParseUUIDPipe) bookId: string) {
     return this.booksService.findBookResources(bookId)
   }
