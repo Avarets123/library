@@ -6,6 +6,7 @@ import { RedisModule } from './infrastructure/redis/redis.module'
 import { AuthModule } from '@modules/auth/auth.module'
 import { UserModule } from '@modules/users/users.module'
 import { getJwtSecret } from '@modules/auth/utils/getJwtSecret.util'
+import { MulterModule } from '@nestjs/platform-express'
 
 const secret = getJwtSecret()
 
@@ -20,6 +21,9 @@ const secret = getJwtSecret()
     MapperModule,
     AuthModule,
     UserModule,
+    MulterModule.register({
+      dest: './books'
+    })
   ],
 })
 export class AppModule {}

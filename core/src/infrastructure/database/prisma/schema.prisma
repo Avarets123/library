@@ -28,10 +28,22 @@ model Book {
   redaction     String
   publishedDate DateTime
 
-  authors UserBookPivotTable[]
-  genres  BookGenrePivotTable[]
+  authors      UserBookPivotTable[]
+  genres       BookGenrePivotTable[]
+  bookResources BookResource[]
 
   @@map("book")
+}
+
+model BookResource {
+  id       String @unique @default(uuid()) @db.Uuid
+  filePath String
+  fileName String
+  mimeType String
+  size     Int
+
+  bookId String @db.Uuid
+  book   Book   @relation(fields: [bookId], references: [id])
 }
 
 model Genre {
