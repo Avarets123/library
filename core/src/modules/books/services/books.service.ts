@@ -97,6 +97,14 @@ export class BooksService {
     )
   }
 
+  async bookDelete(id: string) {
+    await this.prisma.book.delete({
+      where: {
+        id,
+      },
+    })
+  }
+
   async bookResourceDelete(id: string) {
     return this.prisma.bookResource.delete({
       where: {

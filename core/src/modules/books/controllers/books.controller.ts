@@ -58,22 +58,33 @@ export class BooksController {
   @HttpCode(HttpStatus.OK)
   @Get('genres/:genreId')
   @UseGuards(JwtAuthGuard)
-  findBooksByGenre(@Param('genreId', ParseUUIDPipe) genreId: string, @Query() lsiting: ListingDto) {
+  findBooksByGenre(
+    @Param('genreId', ParseUUIDPipe) genreId: string,
+    @Query() lsiting: ListingDto,
+  ) {
     return this.booksService.findBookByGenreId(genreId, lsiting)
   }
 
   @HttpCode(HttpStatus.OK)
   @Get(':bookId/resources')
   @UseGuards(JwtAuthGuard)
-  bookResources(@Param('bookId') bookId: string) {
+  bookResources(@Param('bookId', ParseUUIDPipe) bookId: string) {
     return this.booksService.findBookResources(bookId)
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete(':bookId')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRolesEnum.admin)
+  bookDelete(@Param('bookId', ParseUUIDPipe) bookId: string) {
+    return this.booksService.bookDelete(bookId)
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':bookId/resources/:resourceId/remove')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRolesEnum.admin)
-  bookResourcesDelete(@Param('resourceId') resourceId: string) {
+  bookResourcesDelete(@Param('resourceId', ParseUUIDPipe) resourceId: string) {
     return this.booksService.bookResourceDelete(resourceId)
   }
 }

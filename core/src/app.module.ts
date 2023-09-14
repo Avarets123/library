@@ -7,6 +7,7 @@ import { AuthModule } from '@modules/auth/auth.module'
 import { UserModule } from '@modules/users/users.module'
 import { getJwtSecret } from '@modules/auth/utils/getJwtSecret.util'
 import { MulterModule } from '@nestjs/platform-express'
+import { UniqueConstraint } from '@modules/globals/validators/unique.validator'
 
 const secret = getJwtSecret()
 
@@ -25,5 +26,6 @@ const secret = getJwtSecret()
       dest: './books'
     })
   ],
+  providers: [UniqueConstraint]
 })
 export class AppModule {}
