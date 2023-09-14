@@ -9,6 +9,10 @@ import { createReadStream } from 'fs'
 import { Stream } from 'stream'
 import { BookUpdateDto } from '../dto/bookUpdate.dto'
 import { BookExistsException } from '../exceptions/bookExists.exception'
+import { Mapper } from '@automapper/core'
+import { InjectMapper } from '@automapper/nestjs'
+import { BookModel } from '@infrastructure/database/models/book.model'
+import { BookReadDto } from '../dto/bookRead.dto'
 
 @Injectable()
 export class BooksService {
@@ -16,15 +20,21 @@ export class BooksService {
     private readonly prisma: PrismaService,
     private readonly genresService: GenresService,
     private readonly repository: RepositoryProvider,
+    @InjectMapper() private readonly mapper: Mapper,
   ) {}
 
   async findMany(listing: ListingDto) {
-    return this.repository.findMany(
+    const res = await this.repository.findMany(
       'book',
       this.prisma.book,
       listing,
       this.bookDefaultIncludes(),
     )
+
+    
+    res.data = this.mapper.mapArray(res.data, BookModel, BookReadDto)
+
+    return res
   }
 
   private connectBookToAuthors(authorsIds: string[]) {

@@ -25,6 +25,10 @@ import { ListingDto } from '@infrastructure/common/pagination/dto/listing.dto'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { Response } from 'express'
 import { BookUpdateDto } from '../dto/bookUpdate.dto'
+import { MapInterceptor } from '@automapper/nestjs'
+import { BookResourceModel } from '@infrastructure/database/models/bookResource.model'
+import { BookModel } from '@infrastructure/database/models/book.model'
+import { BookReadDto } from '../dto/bookRead.dto'
 
 @Controller('books')
 export class BooksController {
@@ -51,6 +55,7 @@ export class BooksController {
     }),
   )
   @Post(':bookId/resources/upload')
+  @UseInterceptors(MapInterceptor(BookResourceModel, BookResourceModel))
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRolesEnum.admin)
   bookUpload(
@@ -87,6 +92,9 @@ export class BooksController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @UseInterceptors(
+    MapInterceptor(BookResourceModel, BookResourceModel, { isArray: true }),
+  )
   @Get(':bookId/resources')
   @UseGuards(JwtAuthGuard)
   bookResources(@Param('bookId', ParseUUIDPipe) bookId: string) {

@@ -1,9 +1,8 @@
 import { AutoMap } from '@automapper/classes'
-import { Book } from '@prisma/client'
-import { UserModel } from './user.model'
-import { BookResourceModel } from './bookResource.model'
+import { BookResourceModel } from '@infrastructure/database/models/bookResource.model'
+import { UserReadDto } from '@modules/users/dto/userRead.dto'
 
-export class BookModel implements Book {
+export class BookReadDto {
   @AutoMap()
   id: string
 
@@ -19,7 +18,7 @@ export class BookModel implements Book {
   @AutoMap(() => BookResourceModel)
   bookResources: BookResourceModel[]
 
-  authors: { user: UserModel }[]
+  authors: UserReadDto[]
 
-  genres: { genre: { name: string } }[]
+  genres: string[]
 }

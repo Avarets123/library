@@ -15,7 +15,6 @@ export class UserModel implements User {
   @AutoMap()
   name: string
 
-  @AutoMap()
   password: string
 
   books: { book: BookModel }[]
