@@ -17,7 +17,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           command: |
             whoami ; 
-            cd '{{ secrets.PROJECT_FOLDER }}' ; 
+            cd /opt/deploy/project ; 
             ll -a ;
             docker-compose pull library_backend ;
             docker-compose up -d --build library_backend ;
