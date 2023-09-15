@@ -4,6 +4,8 @@ jobs:
   Test:
     env: 
       JWT_SECRET: secret
+      DATABASE_URL: postgresql://postgres:password@localhost:5555/postgres?schema=public
+
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -11,9 +13,11 @@ jobs:
       - name: Install dependencies
         run: cd core && npm ci
       - name: Run database
-        run: cd infrastructure && docker-compose up -d library_db
+        run: docker run --name test_db -e POSTGRES_DB=postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=password -e POSTGRES_PORT=5555 -p 5555:5432  -d postgres:12
       - name: Print envs
         run: env
+      - name: Run migrations
+        run: cd core && npx prisma migrate deploy
       - name: Run tests
         run: cd core && npm run test
 
