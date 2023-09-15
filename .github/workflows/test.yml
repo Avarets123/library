@@ -8,6 +8,8 @@ jobs:
         uses: actions/checkout@v3
       - name: Install dependencies
         run: cd core && npm ci
+      - name: Run database
+        run: cd infrastructure && docker-compose up -d library_db
       - name: Run tests
         run: cd core && npm run test
 
