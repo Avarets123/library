@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { hash, compare } from 'bcrypt'
+import { PasswordUndefinedException } from '../exceptions/passwordUndefined.exception'
 
 @Injectable()
 export class PasswordService {
@@ -7,6 +8,10 @@ export class PasswordService {
     password: string,
     difficult: number = 8,
   ): Promise<string> {
+    if (!password) {
+      throw new PasswordUndefinedException()
+    }
+
     return hash(password, difficult)
   }
 
@@ -14,6 +19,10 @@ export class PasswordService {
     hashPassword: string,
     rawPassword: string,
   ): Promise<boolean> {
+    if (!rawPassword) {
+      throw new PasswordUndefinedException()
+    }
+
     return compare(rawPassword, hashPassword)
   }
 }

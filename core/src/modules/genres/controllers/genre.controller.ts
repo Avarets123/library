@@ -37,7 +37,7 @@ export class GenresController {
     return this.genresService.findMany(listing)
   }
 
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':genreId')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRolesEnum.admin)

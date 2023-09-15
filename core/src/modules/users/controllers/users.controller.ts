@@ -27,7 +27,7 @@ export class UsersController {
     return this.userService.findMany(listing)
   }
 
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Patch(':authorId')
   @UseGuards(JwtAuthGuard)
   patchUser(
