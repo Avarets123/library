@@ -2,6 +2,8 @@ name: Test
 on: push
 jobs:
   Test:
+    env: 
+      JWT_SECRET: secret
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -10,6 +12,8 @@ jobs:
         run: cd core && npm ci
       - name: Run database
         run: cd infrastructure && docker-compose up -d library_db
+      - name: Print envs
+        run: env
       - name: Run tests
         run: cd core && npm run test
 
