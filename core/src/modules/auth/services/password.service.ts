@@ -4,10 +4,7 @@ import { PasswordUndefinedException } from '../exceptions/passwordUndefined.exce
 
 @Injectable()
 export class PasswordService {
-  async hashingPassword(
-    password: string,
-    difficult: number = 8,
-  ): Promise<string> {
+  async hashingPassword(password: string, difficult = 8): Promise<string> {
     if (!password) {
       throw new PasswordUndefinedException()
     }

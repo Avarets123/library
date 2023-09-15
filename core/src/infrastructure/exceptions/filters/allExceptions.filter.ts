@@ -20,8 +20,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
         exception['response']?.code ||
         'INTERNAL_SERVER_ERROR',
     )
-    
-    let message = exception?.['response']?.['message'] || exception['message'] || undefined
+
+    let message =
+      exception?.['response']?.['message'] || exception['message'] || undefined
 
     if (exception['code'] === '23505') {
       status = HttpStatus.CONFLICT

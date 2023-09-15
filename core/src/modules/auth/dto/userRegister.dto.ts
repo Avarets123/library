@@ -1,6 +1,13 @@
 import { Unique } from '@modules/globals/validators/unique.validator'
 import { UserRolesEnum } from '@prisma/client'
-import { IsDate, IsDateString, IsEmail, IsEnum, IsString, Validate } from 'class-validator'
+import {
+  IsDate,
+  IsDateString,
+  IsEmail,
+  IsEnum,
+  IsString,
+  Validate,
+} from 'class-validator'
 
 export class UserRegisterDto {
   @IsString()

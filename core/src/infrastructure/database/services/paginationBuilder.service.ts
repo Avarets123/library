@@ -151,7 +151,7 @@ export class PaginationBuilder<T> {
         }
       }
 
-      let { skip, take } = this.countResponseItems(params)
+      const { skip, take } = this.countResponseItems(params)
 
       const distinct = distinctField || undefined
 

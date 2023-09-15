@@ -34,7 +34,7 @@ export class SpleenParser {
     } else if (filter instanceof Clause) {
       const subject = filter.subject.path[0]
       const operator = filter.operator.type
-      let object = filter.object
+      const object = filter.object
       const key = subject
 
       if (availableFields.includes(key)) {

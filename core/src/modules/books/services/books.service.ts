@@ -31,7 +31,6 @@ export class BooksService {
       this.bookDefaultIncludes(),
     )
 
-    
     res.data = this.mapper.mapArray(res.data, BookModel, BookReadDto)
 
     return res
