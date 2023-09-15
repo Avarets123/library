@@ -1,11 +1,10 @@
 name: Deploy backend
 on:
-  push:
-  # workflow_run:
-  #   workflows:
-  #     - "Build backend"
-  #   types:
-  #     - completed
+  workflow_run:
+    workflows:
+      - "Build backend"
+    types:
+      - completed
 jobs:
   deploy:
     runs-on: ubuntu-latest
