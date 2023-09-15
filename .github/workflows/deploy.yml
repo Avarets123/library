@@ -1,10 +1,10 @@
 name: Deploy backend
-on: push
-  # workflow_run:
-  #   workflows:
-  #     - "Build backend"
-  #   types:
-  #     - completed
+on:
+  workflow_run:
+    workflows:
+      - "Build backend"
+    types:
+      - completed
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -16,8 +16,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           command: |
-            whoami ; 
             cd /opt/deploy/project ; 
-            ll -a ;
+            ls -a ;
             docker-compose pull library_backend ;
             docker-compose up -d --build library_backend ;

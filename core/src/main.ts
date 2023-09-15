@@ -16,6 +16,5 @@ async function bootstrap() {
 
   await app.listen(PORT)
   console.log(`Library service has ben started on port: ${PORT}`)
-  console.log('ci/cd')
 }
 bootstrap()
