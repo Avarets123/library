@@ -49,31 +49,38 @@ export class BooksService {
   async create(dto: BookCreateDto) {
     const { genres, authorsIds, ...other } = dto
 
-    await this.createNotExistsGenres(genres)
+    const hasBook = await this.getBookByName(other.name)
 
-    const genresDb = await this.genresService.getGenresByNames(genres)
+    if (hasBook) throw new BookExistsException()
 
-    await this.prisma.book.create({
-      data: {
-        ...other,
-        authors: this.connectBookToAuthors(authorsIds),
-        genres: {
-          createMany: {
-            data: genresDb.map((el) => ({ genreId: el.id })),
+    await this.prisma.$transaction(async (prisma) => {
+      await this.createNotExistsGenres(genres, prisma)
+      const genresDb = await this.genresService.getGenresByNames(genres, prisma)
+      await prisma.book.create({
+        data: {
+          ...other,
+          authors: this.connectBookToAuthors(authorsIds),
+          genres: {
+            createMany: {
+              data: genresDb.map((el) => ({ genreId: el.id })),
+            },
           },
         },
-      },
+      })
     })
   }
 
-  private async createNotExistsGenres(genres: string[] = []) {
+  private async createNotExistsGenres(
+    genres: string[] = [],
+    prisma?: Prisma.TransactionClient,
+  ) {
     const existsGenres = await this.genresService.getGenresByNames(genres)
 
     const existsGenresNames = new Set<string>(existsGenres.map((el) => el.name))
 
     const notExistsGenres = genres.filter((el) => !existsGenresNames.has(el))
 
-    return await this.genresService.createGenresByNames(notExistsGenres)
+    return await this.genresService.createGenresByNames(notExistsGenres, prisma)
   }
 
   async bookResourceUpload(bookId: string, file: Express.Multer.File) {
@@ -205,5 +212,16 @@ export class BooksService {
     if (hasBook) {
       throw new BookExistsException()
     }
+  }
+
+  private async getBookByName(name: string) {
+    return this.prisma.book.findFirst({
+      where: {
+        name,
+      },
+      select: {
+        id: true,
+      },
+    })
   }
 }

@@ -9,6 +9,7 @@ import { TokenService } from './jwt.service'
 import { PasswordService } from './password.service'
 import { UserNotFoundException } from '../exceptions/userNotFound.exception'
 import { InvalidPasswordException } from '../exceptions/invalidPassword.exception'
+import { UserExistsException } from '../exceptions/userExists.exception'
 
 @Injectable()
 export class AuthService {
@@ -20,6 +21,10 @@ export class AuthService {
 
   async register(dto: UserRegisterDto): Promise<User> {
     const { email, password, ...other } = dto
+
+    const hasUser = await this.getUserByEmail(email)
+
+    if (hasUser) throw new UserExistsException()
 
     const hashedPassword = await this.passwordService.hashingPassword(password)
 
@@ -57,5 +62,16 @@ export class AuthService {
     if (!isValidPassword) throw new InvalidPasswordException()
 
     return this.tokenService.getTokens(hasUser)
+  }
+
+  async getUserByEmail(email: string) {
+    return this.prisma.user.findFirst({
+      where: {
+        email,
+      },
+      select: {
+        id: true,
+      },
+    })
   }
 }

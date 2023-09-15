@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus } from '@nestjs/common'
+import { BadRequestException, HttpStatus } from '@nestjs/common'
 
 export class BookExistsException extends BadRequestException {
   constructor() {
