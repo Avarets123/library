@@ -14,9 +14,9 @@ jobs:
         uses: tarunjangra/ssh-remote-cmd@v1
         with:
           host: ${{ secrets.SSH_HOST }}
-          user: ${{ secrets.SSH_USER }}
+          username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          command: |
+          script: |
             whoami ;
             cd {{ secrets.PROJECT_FOLDER }} ;
             ll -a ;
