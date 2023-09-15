@@ -3,4 +3,4 @@ dist/
 
 var/
 
-.env
+core/.env
