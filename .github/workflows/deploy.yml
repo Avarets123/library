@@ -16,8 +16,8 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            whoami ;
-            cd {{ secrets.PROJECT_FOLDER }} ;
-            ll -a ;
-            docker-compose pull library_backend ;
-            docker-compose up -d --build library_backend ;
+            whoami 
+            cd {{ secrets.PROJECT_FOLDER }} 
+            ll -a 
+            docker-compose pull library_backend 
+            docker-compose up -d --build library_backend
