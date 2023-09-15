@@ -1,20 +1,21 @@
 name: Deploy backend
 on:
-  workflow_run:
-    workflows:
-      - "Build backend"
-    types:
-      - completed
+  push:
+  # workflow_run:
+  #   workflows:
+  #     - "Build backend"
+  #   types:
+  #     - completed
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy commands
-        uses: D3rHase/ssh-command-action@v0.2.2
+        uses: tarunjangra/ssh-remote-cmd@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           user: ${{ secrets.SSH_USER }}
-          private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           command: |
             cd {{ secrets.PROJECT_FOLDER }} &&
             ll -a &&
