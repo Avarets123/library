@@ -49,7 +49,7 @@ export class BooksController {
   @HttpCode(HttpStatus.CREATED)
   @UseInterceptors(
     FileInterceptor('file', {
-      dest: './books',
+      dest: './booksFiles',
     }),
   )
   @Post(':bookId/resources/upload')
