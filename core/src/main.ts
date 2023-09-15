@@ -5,9 +5,9 @@ import { validationBoot } from './infrastructure/validation/validation.boot'
 import { LoggerErrorInterceptor } from 'nestjs-pino'
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { abortOnError: false })
+  const app = await NestFactory.create(AppModule)
 
-  const PORT = +process.env.PORT || 3010
+  const PORT = +process.env.BACKEND_PORT || 3010
 
   app.enableCors()
   app.useGlobalInterceptors(new LoggerErrorInterceptor())
@@ -16,7 +16,5 @@ async function bootstrap() {
 
   await app.listen(PORT)
   console.log(`Library service has ben started on port: ${PORT}`)
-
-  console.log(new Date())
 }
 bootstrap()

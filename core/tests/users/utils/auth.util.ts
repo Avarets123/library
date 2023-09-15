@@ -19,3 +19,5 @@ export const createUserAndGetToken = async (
 
   return (await authService.login(data)).accessToken
 }
+
+export const concatGmail = (value: string) => value + '@gmail.com'

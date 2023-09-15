@@ -6,6 +6,7 @@ import * as request from 'supertest'
 import { createUser, deleteUserByEmail } from '../utils/user.util'
 import { userRegValidData } from '../data/user.data'
 import { AuthService } from '@modules/auth/services/auth.service'
+import { concatGmail } from '../utils/auth.util'
 
 let app: INestApplication
 let prisma: PrismaService
@@ -24,7 +25,8 @@ beforeAll(async () => {
 
 describe('user controller', () => {
   test('PATCH - /authors/:authorId', async () => {
-    const otherEmail = 'testA@gmail.com'
+    userRegValidData.email = concatGmail('five')
+
     await deleteUserByEmail(userRegValidData.email, prisma)
 
     const newUser = await createUser(userRegValidData, authService)
@@ -41,6 +43,8 @@ describe('user controller', () => {
 
   test('PATCH - /authors/:authorId - update other user', async () => {
     const otherEmail = 'testA@gmail.com'
+    userRegValidData.email = concatGmail('six')
+
     await deleteUserByEmail(userRegValidData.email, prisma)
     await deleteUserByEmail(otherEmail, prisma)
 
@@ -70,6 +74,8 @@ describe('user controller', () => {
 
   test('PATCH - /authors/:authorId - admin update any user', async () => {
     const otherEmail = 'testAdmin@gmail.com'
+    userRegValidData.email = concatGmail('seven')
+
     await deleteUserByEmail(userRegValidData.email, prisma)
     await deleteUserByEmail(otherEmail, prisma)
 

@@ -14,3 +14,15 @@ services:
       - ./var/pgdata:/var/lib/postgresql/data
     ports:
       - ${POSTGRES_PORT}:5432
+  
+  library_backend:
+    container_name: library_backend
+    build: 
+      context: ../core
+    env_file:
+      - .env
+    restart: always
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@library_db:5432/${POSTGRES_DB}?schema=public
+    ports:
+      - ${BACKEND_PORT}:${BACKEND_PORT}

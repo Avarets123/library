@@ -5,6 +5,7 @@ import * as request from 'supertest'
 import { createUser, deleteUserByEmail } from '../utils/user.util'
 import { AuthService } from '@modules/auth/services/auth.service'
 import { userRegInValidData, userRegValidData } from '../data/user.data'
+import { concatGmail } from '../utils/auth.util'
 
 let app: INestApplication
 let prisma: PrismaService
@@ -28,6 +29,8 @@ describe('auth controller', () => {
   })
 
   test('POST - /auth/register', async () => {
+    userRegValidData.email = concatGmail('one')
+
     await deleteUserByEmail(userRegValidData.email, prisma)
     const { body } = await request(app.getHttpServer())
       .post('/auth/register')
@@ -41,6 +44,8 @@ describe('auth controller', () => {
   })
 
   test('POST - /auth/login', async () => {
+    userRegValidData.email = concatGmail('two')
+
     await deleteUserByEmail(userRegValidData.email, prisma)
 
     await createUser(userRegValidData, authService)
@@ -56,6 +61,8 @@ describe('auth controller', () => {
   })
 
   test('POST - /auth/login - by inValid password', async () => {
+    userRegValidData.email = concatGmail('three')
+
     await deleteUserByEmail(userRegValidData.email, prisma)
 
     await createUser(userRegValidData, authService)
@@ -69,6 +76,8 @@ describe('auth controller', () => {
   })
 
   test('POST - /auth/login - by not exists user', async () => {
+    userRegValidData.email = concatGmail('four')
+
     await deleteUserByEmail(userRegValidData.email, prisma)
     await createUser(userRegValidData, authService)
 
