@@ -30,4 +30,4 @@ jobs:
         with:
           context: ./core
           push: true
-          tags: osman512:library
+          tags: osman512/library
