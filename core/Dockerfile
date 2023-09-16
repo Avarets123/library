@@ -27,7 +27,7 @@ WORKDIR /usr/src/app
 COPY --from=builder --chown=node:node /usr/src/app/package*.json ./
 COPY --from=builder --chown=node:node /usr/src/app/node_modules/ ./node_modules/
 COPY --from=builder --chown=node:node /usr/src/app/dist/ ./dist/
-COPY --from=builder --chown=node:node /usr/src/app/src/infrastructure/database/prisma/ ./src/infrastructure/database/prisma/
+COPY --from=builder --chown=node:node /usr/src/app/src/infrastructure/database/ ./src/infrastructure/database/
 
 
 CMD ["npm", "run", "start:prod"]
