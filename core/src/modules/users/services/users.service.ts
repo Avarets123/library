@@ -22,7 +22,6 @@ export class UsersService {
 
   async findMany(listing: ListingDto) {
     const res = await this.repository.findMany(
-      'user',
       this.prisma.user,
       listing,
       this.defaultUserIncludes(),

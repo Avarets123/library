@@ -2,40 +2,21 @@ import { Injectable } from '@nestjs/common'
 import { PrismaService } from './prisma.service'
 import * as _ from 'lodash'
 import { ListingDto } from '@infrastructure/common/pagination/dto/listing.dto'
-import { SortItemDto } from '@infrastructure/common/pagination/dto/sortItem.dto'
 
 @Injectable()
 export class RepositoryProvider {
   constructor(private readonly prisma: PrismaService) {}
 
   async findMany<T>(
-    tableName: string,
     model: any,
     params: ListingDto,
     include?: Record<string, any>,
     andWhere?: Partial<T>,
   ) {
-    const allFields = (await this.prisma.getTableFields(tableName)).map(
-      (el) => el.column_name,
-    )
-
-    let where: any = {
-      AND: {
-        OR: await this.applySearch(params.query, tableName),
-      },
-    }
+    let where: any = {}
 
     if (andWhere) {
       _.merge(where, andWhere)
-    }
-
-    if (allFields.find((f) => f === 'deletedAt')) {
-      where = {
-        AND: {
-          ...where,
-          deletedAt: where.deletedAt ?? null,
-        },
-      }
     }
 
     const { skip, take } = this.countResponseItems(params)
@@ -67,22 +48,6 @@ export class RepositoryProvider {
     }
   }
 
-  applyOrdering(sort: SortItemDto[]) {
-    return sort?.length
-      ? sort.map((item) => ({ [item.field]: item.direction }))
-      : ([{ createdAt: 'desc' }] as unknown)
-  }
-
-  async softDelete(model: any, where: any) {
-    await model.updateMany({
-      where: {
-        ...where,
-        deletedAt: null,
-      },
-      data: { deletedAt: new Date() },
-    })
-  }
-
   private countResponseItems(params: ListingDto) {
     const { limit, page } = params
 
@@ -99,14 +64,5 @@ export class RepositoryProvider {
     res.take = limit
 
     return res
-  }
-
-  private async applySearch(search: string, tableName: string) {
-    if (!search) return []
-
-    const strFields = await this.prisma.getTableFieldsByType(tableName, 'text')
-    return strFields.map((field) => ({
-      [field]: { contains: search, mode: 'insensitive' },
-    }))
   }
 }

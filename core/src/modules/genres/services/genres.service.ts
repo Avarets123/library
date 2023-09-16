@@ -14,7 +14,7 @@ export class GenresService {
   ) {}
 
   async findMany(listing: ListingDto) {
-    return this.repository.findMany('genre', this.prisma.genre, listing)
+    return this.repository.findMany(this.prisma.genre, listing)
   }
 
   async create(data: GenreCreateDto) {

@@ -25,7 +25,6 @@ export class BooksService {
 
   async findMany(listing: ListingDto) {
     const res = await this.repository.findMany(
-      'book',
       this.prisma.book,
       listing,
       this.bookDefaultIncludes(),
@@ -135,7 +134,6 @@ export class BooksService {
     }
 
     return this.repository.findMany<Prisma.BookWhereInput>(
-      'book',
       this.prisma.book,
       listing,
       include,
