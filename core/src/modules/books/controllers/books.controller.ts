@@ -117,7 +117,7 @@ export class BooksController {
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
-  @Delete(':bookId/resources/:resourceId/remove')
+  @Delete(':bookId/resources/:resourceId')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRolesEnum.admin)
   bookResourcesDelete(@Param('resourceId', ParseUUIDPipe) resourceId: string) {
